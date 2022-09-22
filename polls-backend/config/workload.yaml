@@ -7,6 +7,18 @@ metadata:
     apps.tanzu.vmware.com/workload-type: web
     app.kubernetes.io/part-of: cloud-native-polls
 spec:
+  env:
+  - name: PORT
+    value: "8080"
+  - name: REDIS_HOST
+    value: redis-master
+  - name: REDIS_PORT
+    value: "6379"
+  - name: REDIS_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: redis
+        key: redis-password
   build:
     env:
     - name: BP_JVM_VERSION
