@@ -8,8 +8,6 @@ metadata:
     app.kubernetes.io/part-of: cloud-native-polls
 spec:
   env:
-  - name: PORT
-    value: "8080"
   - name: REDIS_HOST
     value: redis-master
   - name: REDIS_PORT
