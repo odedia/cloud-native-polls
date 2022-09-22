@@ -1,0 +1,15 @@
+kapp -y deploy --app rmq-operator --file https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
+
+kubectl create namespace service-instances
+
+k apply -f k8s/
+
+tanzu service claimable list --class rabbitmq
+
+tanzu service claim create rmq \
+  --resource-name rmq \
+  --resource-namespace service-instances \
+  --resource-kind RabbitmqCluster \
+  --resource-api-version rabbitmq.com/v1beta1
+
+tanzu services claims get rmq --namespace demos

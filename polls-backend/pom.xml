@@ -2,15 +2,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>fr.alexandreroman.cloudnativepoll</groupId>
-        <artifactId>cloudnativepoll-parent</artifactId>
-        <version>1</version>
-    </parent>
-    <artifactId>cloudnativepoll-backend</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>Cloud-native Poll - Backend</name>
-    <description>Backend for the cloud-native poll app</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.3</version>
+        <relativePath />
+	</parent>
+
+    <artifactId>polls-backend</artifactId>
+    <version>1.0.0</version>
+    <name>Cloud-native Polls - Backend</name>
+    <description>Backend for the cloud-native polls app</description>
+
+    <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2021.0.4</spring-cloud.version>
+        <wavefront.version>2.3.0</wavefront.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.wavefront</groupId>
+                <artifactId>wavefront-spring-boot-bom</artifactId>
+                <version>${wavefront.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -83,6 +111,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+
 
     <build>
         <finalName>${project.artifactId}</finalName>
