@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            backend:
+              - service-id: backend
+                uri: http://localhost:9876
