@@ -12,6 +12,31 @@
     <name>Cloud-native Poll - Web UI</name>
     <description>Web user interface of cloud-native poll app</description>
 
+    <properties>
+        <java.version>17</java.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <wavefront.version>2.2.2</wavefront.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.wavefront</groupId>
+                <artifactId>wavefront-spring-boot-bom</artifactId>
+                <version>${wavefront.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
