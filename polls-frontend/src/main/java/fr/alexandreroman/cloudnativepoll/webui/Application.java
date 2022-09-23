@@ -21,6 +21,8 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,6 +31,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -39,6 +44,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,24 +156,33 @@ class VoteCache {
     }
 }
 
-@FeignClient(name = "polls-backend", fallback = BackendClientServiceFallback.class)
-interface BackendClientService {
+//@FeignClient(name = "polls-backend", fallback = BackendClientServiceFallback.class)
+@RestController
+class BackendClientService {
     // OpenFeign is used to generate a runtime REST client:
     // no RestTemplate / WebClient is used.
+    @Autowired RestTemplate restTemplate;
 
     @GetMapping("api/v1/votes")
-    Map<String, Integer> getResults();
-}
-
-@Component
-@Slf4j
-class BackendClientServiceFallback implements BackendClientService {
-    @Override
+    // Map<String, Integer> getResults();
     public Map<String, Integer> getResults() {
-        log.warn("Failed to get poll results: using values from cache");
-        return emptyMap();
+        ParameterizedTypeReference<Map<String, Integer>> responseType = new ParameterizedTypeReference<Map<String, Integer>>() {};
+
+        RequestEntity<Void> request = RequestEntity.get("https://polls-backend-demos.apps.iterate.tanzutime.com/api/v1/votes").accept(MediaType.APPLICATION_JSON).build();
+        Map<String, Integer> jsonDictionary = restTemplate.exchange(request, responseType).getBody();
+        return jsonDictionary;
     }
 }
+
+// @Component
+// @Slf4j
+// class BackendClientServiceFallback implements BackendClientService {
+//     @Override
+//     public Map<String, Integer> getResults() {
+//         log.warn("Failed to get poll results: using values from cache");
+//         return emptyMap();
+//     }
+// }
 
 @Component
 @RequiredArgsConstructor
