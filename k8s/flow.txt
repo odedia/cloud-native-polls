@@ -1,3 +1,5 @@
+helm install redis bitnami/redis --version 16.12.2 --set "master.disableCommands=['FLUSHDB']" --set "replica.replicaCount=0"
+
 kapp -y deploy --app rmq-operator --file https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml
 
 kubectl create namespace service-instances
@@ -17,4 +19,5 @@ tanzu service claim create rmq \
   --resource-api-version rabbitmq.com/v1beta1
 
 tanzu services claims get rmq --namespace demos
+
 
