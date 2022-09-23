@@ -11,6 +11,8 @@ management:
 spring:
   cloud:
     stream:
+      function:
+        definition: onVote
       bindings:
         onVote-in-0:
           destination: cloudnativepoll.votes

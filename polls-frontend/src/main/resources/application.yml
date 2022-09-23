@@ -11,6 +11,8 @@ management:
 spring:
   cloud:
     stream:
+      function:
+        definition: voteQueueSource
       bindings:
         voteQueueSource-out-0:
           destination: cloudnativepoll.votes
