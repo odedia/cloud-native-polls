@@ -1,4 +1,4 @@
-# Cloud-native Poll app
+# Cloud-native Poll app for Tanzu Platform for Cloud Foundry
 
 This project is a cloud-native implementation of a voting app, using modern technologies
 like [Spring Boot](https://spring.io/projects/spring-boot),
@@ -8,6 +8,8 @@ like [Spring Boot](https://spring.io/projects/spring-boot),
 You can freely set up your own questions and thumbnails, by setting configuration
 through Spring properties.
 
+The app has been updated to Spring Boot 3.3, and uses Spring Cloud Discovery to find the frontend and backend. The backend is hidden behind `apps.internal` route to prevent unwanted access, only the frontend can call this service.
+
 <img src="app-screenshot.png"/>
 
 ## Compiling this app
@@ -16,37 +18,67 @@ This app is made of 2 microservices: a [backend](backend) and a
 [Web UI frontend](frontend). These microservices leverage a RabbitMQ instance to share
 messages and a Redis instance to store data.
 
-You need a JDK 11+ to build this app:
+You need a JDK 17+ to build this both microservices from the parent folder:
 ```bash
 $ ./mvwn clean package
 ```
 
-## Running locally
+### Provision services on Tanzu Platform for Cloud Foundry
 
-Start a Redis instance using Docker:
-```bash
-$ docker run --rm -p 6379:6379/tcp redis:5
+Create 3 services:
+
+1. A Redis service called `redis`.
+2. A RabbitMQ service called `rabbit`.
+3. A Service Discovery service called `discovery`.
+
+### Deploy apps to Tanzu Platform for Cloud Foundry
+
+Review the manifest.yml under `polls-frontend`. the run: 
+
+```
+cf push
 ```
 
-Start a RabbitMQ instance:
-```bash
-$ docker run --rm -p 5672:5672/tcp -p 15672:15672/tcp rabbitmq:3-management
+Review the manifest.yml under `polls-backend`, then run:
+
+```
+cf push
 ```
 
-The RabbitMQ management UI is available at http://localhost:15672:
-use `guest` / `guest` to sign in.
+Check your frontend apps's URL in Apps Manager (it will be randomly generated) and open the app.
 
-Start the backend:
-```bash
-$ java -jar backend/target/cloudnativepoll-backend.jar
+Check the service discovery dashboard to see both apps registered.
+
+### Preventing access to backend service
+
+In Apps Manager, replace the public route for `polls-backend` with one under the `apps.internal` domain. This will prevent outside access to the backend, since `apps.internal` is only accessible from other apps that have permission.
+
+At first - the communcation will fail. Create a network policy between `polls-frontend` and `polls-backend` on port 8080. Things will now work as expected.
+
+### Add dynamic configuration via Config Server
+
+Create a config server service:
+
+```
+cf create-service p.config-server standard config -c '{"git": { "uri": "https://github.com/odedia/cloudnativepoll-config.git", "label": "main" } }'
 ```
 
-Start the frontend:
-```bash
-$ java -jar frontend/target/cloudnativepoll-webui.jar
+Uncomment:
+
+	    <!--dependency>
+	      <groupId>io.pivotal.spring.cloud</groupId>
+	      <artifactId>spring-cloud-services-starter-config-client</artifactId>
+	    </dependency-->
+
+Add the service `config` to both manifests.
+
+cf push both apps
+
+```
+mvn clean package && cd polls-backend && cf push && cd ../polls-frontend && cf push
 ```
 
-The app is available at http://localhost:8080.
+
 
 ## Contribute
 

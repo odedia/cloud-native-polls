@@ -3,13 +3,13 @@ management:
     web:
       exposure:
         include: health, info, prometheus, env
-  metrics:
-    export:
-      wavefront:
-        enabled: false
 
 spring:
+  application:
+    name: polls-backend
   cloud:
+    services:
+      registrationMethod: direct
     stream:
       function:
         definition: onVote
@@ -18,19 +18,10 @@ spring:
           destination: cloudnativepoll.votes
           # Use a group to ensure a single app instance handles incoming messages.
           group: voter
-  redis:
-    # Connect to a local Redis instance by default.
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: ${REDIS_PASSWORD}
 
-server:
-  port: ${PORT:8081}
-
-wavefront:
-  application:
-    name: cloudnativepoll
-    service: backend
+eureka:
+  instance:
+    nonSecurePort: 8080
 
 poll:
   choices:

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.3</version>
+		<version>3.3.6</version>
 		<relativePath />
 	</parent>
     <artifactId>polls-frontend</artifactId>
@@ -15,8 +15,8 @@
 
     <properties>
         <java.version>17</java.version>
-        <spring-cloud.version>2021.0.4</spring-cloud.version>
-        <wavefront.version>2.3.0</wavefront.version>
+        <spring-cloud.version>2023.0.4</spring-cloud.version>
+        <spring-cloud-services.version>4.2.0</spring-cloud-services.version>
     </properties>
 
     <dependencyManagement>
@@ -29,9 +29,9 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.wavefront</groupId>
-                <artifactId>wavefront-spring-boot-bom</artifactId>
-                <version>${wavefront.version}</version>
+                <groupId>io.pivotal.spring.cloud</groupId>
+                <artifactId>spring-cloud-services-dependencies</artifactId>
+                <version>${spring-cloud-services.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -39,6 +39,14 @@
     </dependencyManagement>
 
     <dependencies>
+<!--       <dependency>
+	    <groupId>io.pivotal.spring.cloud</groupId>
+	    <artifactId>spring-cloud-services-starter-config-client</artifactId>
+      </dependency>
+ -->         <dependency>
+            <groupId>io.pivotal.spring.cloud</groupId>
+            <artifactId>spring-cloud-services-starter-service-registry</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -47,7 +55,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -56,11 +63,6 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.wavefront</groupId>
-            <artifactId>wavefront-spring-boot-starter</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-stream</artifactId>
@@ -71,23 +73,17 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-kubernetes-client-all</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <groupId>io.pivotal.cfenv</groupId>
+            <artifactId>java-cfenv-boot</artifactId>
+            <version>3.3.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

@@ -1,0 +1,15 @@
+---
+applications:
+- name: polls-backend
+  path: ./target/polls-backend.jar
+  buildpacks:
+    - java_buildpack_offline
+#  routes:
+#    - route: polls-backend.apps.internal
+  env:
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+}}'
+  services:
+    - rabbit
+    - redis
+    - discovery
+#    - config

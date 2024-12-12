@@ -16,6 +16,8 @@
 
 package fr.alexandreroman.cloudnativepoll.webui;
 
+import static java.util.Collections.emptyMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Supplier;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -51,7 +52,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import static java.util.Collections.emptyMap;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -134,6 +134,7 @@ class VotesController {
     Supplier<Message<VoteRequest>> voteQueueSource() {
         return requestQueue::poll;
     }
+    
 }
 
 @Data
@@ -160,22 +161,9 @@ class VoteCache {
 }
 
 @FeignClient(name = "polls-backend", fallback = BackendClientServiceFallback.class)
-//@RestController
 interface BackendClientService {
-    // OpenFeign is used to generate a runtime REST client:
-    // no RestTemplate / WebClient is used.
-    // @Autowired RestTemplate restTemplate;
-
     @GetMapping("api/v1/votes")
-    Map<String, Integer> getResults();
-    // public Map<String, Integer> getResults();
-    //  {
-    //     ParameterizedTypeReference<Map<String, Integer>> responseType = new ParameterizedTypeReference<Map<String, Integer>>() {};
-
-    //     RequestEntity<Void> request = RequestEntity.get("https://polls-backend-demos.apps.iterate.tanzutime.com/api/v1/votes").accept(MediaType.APPLICATION_JSON).build();
-    //     Map<String, Integer> jsonDictionary = restTemplate.exchange(request, responseType).getBody();
-    //     return jsonDictionary;
-    // }
+     public Map<String, Integer> getResults();
 }
 
 @Component

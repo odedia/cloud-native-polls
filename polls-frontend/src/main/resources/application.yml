@@ -3,41 +3,34 @@ management:
     web:
       exposure:
         include: health, info, prometheus, env, refresh
-  metrics:
-    export:
-      wavefront:
-        enabled: false
 
 spring:
+  application:
+    name: polls-frontend
   cloud:
+    services:
+      registrationMethod: direct
     stream:
       function:
         definition: voteQueueSource
       bindings:
         voteQueueSource-out-0:
           destination: cloudnativepoll.votes
-    discovery:
-      client:
-        simple:
-          instances:
-            backend:
-              - service-id: polls-backend
-                uri: http://localhost:8081
-
 feign:
+  discovery:
+    enabled: true
   circuitbreaker:
     enabled: true
+ribbon:
+  eureka:
+    enabled: true
+
 
 logging:
   level:
     fr:
       alexandreroman:
         cloudnativepoll: INFO
-
-wavefront:
-  application:
-    name: cloudnativepoll
-    service: webui
 
 poll:
   refresh: 250

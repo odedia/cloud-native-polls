@@ -25,8 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
-import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
+import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeRepository;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -55,10 +54,9 @@ public class Application {
     }
 
     @Bean
-    public HttpTraceRepository htttpTraceRepository() {
-        return new InMemoryHttpTraceRepository();
-    };
-
+    public InMemoryHttpExchangeRepository createTraceRepository() {
+      return new InMemoryHttpExchangeRepository();
+    }
 }
 
 @Component
